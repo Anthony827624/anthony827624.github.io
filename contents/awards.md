@@ -1,12 +1,9 @@
+- National Scholarship for Undergraduate Students, 2025.
 
-- Outstanding Graduate Award (CUMT), 2025.
+- First-Prize Scholarship of Zhejiang University, 2025.
 
-- National Scholarship for Graduate Students (Ministry of Education, China), 2024.
+- First-Prize Scholarship of Zhejiang University International Campus, 2025.
 
-- First-Prize Graduate Academic Scholarship (CUMT), 2023 & 2024.
+- Dean's List of University of Illinois at Urbana-Champaign, 2025.
 
-- Outstanding Undergraduate Thesis Award (Jiangsu, China), 2022.
-
-- First-Prize Corporate Scholarship (CUMT), 2020.
-
-- First-Prize Undergraduate Academic Scholarship (CUMT), 2019.
+- Dean's List of University of Illinois at Urbana-Champaign, 2026.
