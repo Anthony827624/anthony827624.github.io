@@ -16,7 +16,7 @@ license-link:
 sections:
   - id: home
     nav: HOME
-    title: User Name&ensp;|&ensp;姓名
+    title: Hongshuo Zhao&ensp;|&ensp;赵鸿硕
     href: "#page-top" # Default to '#<id>' if not specified
   - id: publications
     nav: PUBLICATIONS
