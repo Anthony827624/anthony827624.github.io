@@ -1,23 +1,23 @@
-title: User Name's Homepage
-page-top-title: User Name
-top-section-bg-text: Computer Science
+title: Hongshuo Zhao's Homepage
+page-top-title: Hongshuo Zhao (Anthony)
+top-section-bg-text: Electrical Engineering
 backgrounds:
-  - static/assets/background/background_0.jpeg
+  - static/assets/background/background_0.jpg
   - static/assets/background/background_1.jpeg
 background-interval-ms: 7000
 background-overlay: 0.52
-copyright-text: '&copy; Sen Li 2023-2026. All Rights Reserved.'
+copyright-text: "&copy; Hongshuo Zhao 2024-2028. All Rights Reserved."
 github-link:
   text: Github
-  href: https://github.com/senli1073
+  href: https://github.com/Anthony827624
 license-link:
   text: License
-  href: https://github.com/senli1073/senli1073.github.io/blob/main/LICENSE
+  href: https://github.com/Anthony827624/Anthony827624.github.io/blob/main/LICENSE
 sections:
   - id: home
     nav: HOME
     title: User Name&ensp;|&ensp;姓名
-    href: '#page-top' # Default to '#<id>' if not specified
+    href: "#page-top" # Default to '#<id>' if not specified
   - id: publications
     nav: PUBLICATIONS
     title: PUBLICATIONS
