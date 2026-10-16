@@ -79,6 +79,8 @@ sections:
     icon: bi-award-fill
 ```
 
+Projects without papers can be listed in `contents/projects.md` with a name, short description, and Website and Code links. The Projects section is configured in `contents/config.yml`, just like Publications.
+
 For each section, `id` maps to `contents/<id>.md`, `nav` sets the navigation text, `title` sets the section heading, and `icon` is an optional [Bootstrap Icons](https://icons.getbootstrap.com/) class. If `href` is omitted, the navigation link defaults to `#<id>`.
 
 Example background configuration:

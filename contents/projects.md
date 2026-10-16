@@ -1,0 +1,2 @@
+- **HDBrain** — Explainable Singapore HDB Valuation and Affordability Analysis. [[Website]](https://anthony827624.github.io/HDBrain) [[Code]](https://github.com/anthony827624/HDBrain)
+- **VGNNA** - Phonon Band Prediction for Screening of Material Thermal Properties. [[Code]](https://github.com/anthony827624/VGNNA)

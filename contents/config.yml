@@ -3,16 +3,16 @@ page-top-title: Hongshuo Zhao (Anthony)
 top-section-bg-text: Electrical Engineering
 backgrounds:
   - static/assets/background/background_0.jpg
-  - static/assets/background/background_1.jpeg
+  - static/assets/background/background_1.jpg
 background-interval-ms: 7000
 background-overlay: 0.52
 copyright-text: "&copy; Hongshuo Zhao 2024-2028. All Rights Reserved."
 github-link:
   text: Github
-  href: https://github.com/Anthony827624
+  href: https://github.com/anthony827624
 license-link:
   text: License
-  href: https://github.com/Anthony827624/Anthony827624.github.io/blob/main/LICENSE
+  href: https://github.com/anthony827624/Anthony827624.github.io/blob/main/LICENSE
 sections:
   - id: home
     nav: HOME
@@ -22,6 +22,10 @@ sections:
     nav: PUBLICATIONS
     title: PUBLICATIONS
     icon: bi-file-text-fill
+  - id: projects
+    nav: PROJECTS
+    title: PROJECTS
+    icon: bi-code-slash
   - id: awards
     nav: AWARDS
     title: AWARDS
