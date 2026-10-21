@@ -1,120 +1,117 @@
+# Hongshuo Zhao's Homepage
 
+Personal academic website with Markdown content, a rotating background, and a blog supporting images and LaTeX math. Hosted on [GitHub Pages](https://anthony827624.github.io/); no build step is required.
 
-![Github Forks](https://img.shields.io/github/forks/senli1073/academic-homepage-template?style=flat)
-![Github Stars](https://img.shields.io/github/stars/senli1073/academic-homepage-template?style=flat)
-![License](https://img.shields.io/github/license/senli1073/academic-homepage-template)
-![Last Commit](https://img.shields.io/github/last-commit/senli1073/academic-homepage-template)
+This repository is forked from [Sen Li's academic-homepage-template](https://github.com/senli1073/academic-homepage-template), which is based on [Start Bootstrap New Age](https://github.com/StartBootstrap/startbootstrap-new-age). This fork adds configurable sections, background rotation, and blog pages.
 
-# A simple Github Pages template for personal academic websites.
+## Repository structure
 
-> ⚠️ SECURITY NOTICE (2026-06)
-> 
-> Older versions of this template include a polyfill.io dependency
-> which may cause malicious popups.
->
-> Please update to the latest version immediately.
-
-## Preview
-[![Screenshot of the Website](https://raw.githubusercontent.com/senli1073/academic-homepage-template/main/screenshot_full.png)](https://senli1073.github.io/)
-
-
-## Introduction
-
-This personal academic website template is based on [startbootstrap](https://github.com/StartBootstrap/startbootstrap-new-age).
-
-The template is designed to integrate Markdown files as content input.  There's no need to compile the webpage before deployment.  Upon loading, the Markdown files are automatically parsed and embedded into the page.
-
-The homepage sections and navigation bar are configured in `contents/config.yml`. Each section loads its body from a matching Markdown file in `contents/`, such as `contents/publications.md`.
-
-The top background supports multiple images. Add images under `static/assets/background/`, list them in `contents/config.yml`, and the page will pick a random first image on refresh before rotating through the list.
-
-This template supports LaTeX formula input. You can use `$...$` and `\(...\)` as delimiters for inline-math, or use `$$...$$` and `\[...\]` as delimiters for display-math. Macros such as `\ref{...}`, `\eqref{...}`, and `\begin{equation}...\end{equation}` are also supported. See [MathJax](https://docs.mathjax.org/en/latest/index.html) for more details.
-
-:milky_way: Demo: https://senli1073.github.io/
-
-
-## Getting Start
-### 1. Fork this repository
-The repository name should be `<username>.github.io`, which will also be your website's URL.
-
-
-### 2. Edit page content
-
-(1) Go to the folder where you want to store your project, and clone the new repository:
-```
-git clone https://github.com/<username>/<username>.github.io.git
-```
-The directory structure is as follows:
-
-```.
+```text
 .
-├── contents
-└── static
-    ├── assets
-    │   ├── background
-    │   └── img
-    ├── css
-    └── js
+├── index.html                 # Homepage
+├── blog.html                  # Individual blog page
+├── contents/
+│   ├── config.yml             # Site settings, navigation, sections, backgrounds
+│   ├── home.md                # Bio, contact details, education, interests
+│   ├── publications.md
+│   ├── projects.md
+│   ├── awards.md
+│   └── blogs/
+│       ├── index.json         # Filenames of posts to display
+│       └── example.md         # Copyable template; not listed by default
+├── static/
+│   ├── assets/
+│   │   ├── background/        # Background images
+│   │   └── img/photo.jpg      # Profile photo
+│   ├── css/                   # Theme and custom styles
+│   └── js/                    # Content loading, Markdown, YAML, MathJax
+└── tests/                     # Node.js checks
 ```
 
-(2) Modify the content of each section, which corresponds to `contents/*.md`.
+## Edit the website
 
-(3) Adjust the title, copyright information, background images, footer links, navigation, and sections in `contents/config.yml`.
-
-Example section configuration:
+Edit `contents/config.yml` to change site text, footer links, backgrounds, and section order. Each regular section loads `contents/<id>.md`; navigation is derived from the same configuration. For example:
 
 ```yaml
 sections:
-  - id: home
-    nav: HOME
-    title: User Name&ensp;|&ensp;姓名
-    href: '#page-top'
   - id: publications
     nav: PUBLICATIONS
     title: PUBLICATIONS
     icon: bi-file-text-fill
-  - id: awards
-    nav: AWARDS
-    title: AWARDS
-    icon: bi-award-fill
 ```
 
-Projects without papers can be listed in `contents/projects.md` with a name, short description, and Website and Code links. The Projects section is configured in `contents/config.yml`, just like Publications.
+`id` identifies the section, `nav` labels its navigation link, `title` sets its heading, and `icon` is optional. Navigation links default to `#<id>`; use `href` to override them. The `blogs` section loads the blog index instead of a matching Markdown file.
 
-For each section, `id` maps to `contents/<id>.md`, `nav` sets the navigation text, `title` sets the section heading, and `icon` is an optional [Bootstrap Icons](https://icons.getbootstrap.com/) class. If `href` is omitted, the navigation link defaults to `#<id>`.
+Replace the profile photo at `static/assets/img/photo.jpg`. Add background images under `static/assets/background/` and list their paths in `backgrounds` in the configuration. Adjust `background-interval-ms` and `background-overlay` there as needed.
 
-Example background configuration:
+## Write a blog post
 
-```yaml
-backgrounds:
-  - static/assets/background/background_0.jpeg
-  - static/assets/background/background_1.png
-background-interval-ms: 7000
-background-overlay: 0.52
+Create a `.md` file directly inside `contents/blogs/`, or copy `example.md`. Start with YAML front matter:
+
+```markdown
+---
+title: "My article title"
+tldr: "A short summary for the homepage."
+date: "2026-10-20"
+---
+
+## First section
+
+Write the article in Markdown here.
 ```
 
-(4) Replace background images in `static/assets/background/` and replace the profile photo in `static/assets/img/`.
+All three fields are required. Use a valid `YYYY-MM-DD` date; keep values quoted and escape embedded double quotes as `\"`. The title and TLDR display as plain text. The article page adds the title, date, and TLDR automatically.
 
-(5) Push it: 
+Add the filename to `contents/blogs/index.json`:
+
+```json
+["my notes.md", "another-post.md"]
 ```
-git commit -am 'init'
-git push
+
+Filenames may contain spaces or non-English characters and do not determine display text or sorting. Posts appear below AWARDS, newest first; ties are sorted by title. The index is maintained manually because this static site does not scan directories. Renaming a file requires updating the index and changes its article URL.
+
+### Images, math, and code
+
+Image paths are relative to the Markdown file. For example, save an image at `contents/blogs/images/result.png` and write:
+
+```markdown
+![Description of the result](images/result.png)
 ```
 
-### 3. Setup
-(1) Under your repository name, click `Settings`.
+External image URLs also work. Images retain their proportions and shrink to fit the page.
 
-(2) In the "Code and automation" section of the sidebar, click `Pages`.
+Use `$x_i^2$` or `\(x_i^2\)` for inline math. For display math, use `$$` or `\[...\]`, with blank lines around the block:
 
-(3) Under "Build and deployment", under "Source", select Deploy from a branch. Then, use the branch dropdown menu and select a publishing source.
+```latex
+$$
+\mathcal{L}(\theta) = \frac{1}{N}\sum_{i=1}^{N}(f_\theta(x_i)-y_i)^2
+$$
+```
 
-### 4. Enjoy
+MathJax is bundled locally. Use fenced code blocks for code; syntax highlighting is not included. Put literal dollar amounts in inline code, such as `` `$20` ``, to avoid math delimiters. Embedded scripts and iframes are not supported.
 
-Fire up a browser and go to `https://<username>.github.io`
+## Preview and check
 
-> Note that it can take up to 10 minutes for changes to your site to publish after you push the changes to GitHub.
+Serve the repository over HTTP rather than opening the HTML files directly:
 
+```sh
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000/`. To preview the sample article, add `"example.md"` to the blog index and visit `http://localhost:8000/blog.html?file=example.md`.
+
+Run the checks with Node.js:
+
+```sh
+node tests/blogs.test.js
+node tests/background-selection.test.js
+node tests/template-quality.test.js
+```
+
+## Publish
+
+Commit and push your changes to the branch used by GitHub Pages. The site is served directly from the repository root. If reusing this fork, update the personal content, configuration, and repository name for your own account.
 
 ## License
 
-Copyright Sen Li, 2023-2025. Licensed under an MIT license. You can copy and mess with this template.
+[MIT](LICENSE). Original template copyright Sen Li, 2023–2025; see the license for attribution and reuse terms.

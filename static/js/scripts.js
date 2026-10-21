@@ -309,6 +309,8 @@ function getConfiguredSections(yml) {
 }
 
 function loadMarkdownSection(name) {
+    if (name === 'blogs') return loadBlogs();
+
     return fetch(content_dir + name + '.md')
         .then(response => response.text())
         .then(markdown => {
@@ -335,6 +337,7 @@ window.addEventListener('DOMContentLoaded', event => {
     loadConfig()
         .then((yml) => {
             applyConfig(yml);
+            if (document.getElementById('blog-content')) return loadBlogPage();
             const sections = normalizeSections(yml.sections);
 
             renderNavigation(getNavigationItems(yml));

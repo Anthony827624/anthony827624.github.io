@@ -262,3 +262,57 @@ section .main-body {
         animation: none;
     }
 }
+.blog-summary {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #d9dee5;
+    text-align: left;
+}
+
+.blog-summary h3 {
+    font-size: 1.6rem;
+}
+
+.blog-summary time {
+    color: #59616b;
+    font-size: 1rem;
+}
+
+.blog-summary p {
+    margin: 0.5rem 0 0;
+}
+
+.blog-main {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    min-height: 80vh;
+    overflow-wrap: anywhere;
+}
+
+.blog-body {
+    padding-top: 2rem;
+    font-size: 1.15rem;
+    line-height: 1.85;
+}
+
+.blog-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+}
+
+.blog-body pre, .blog-body .blog-math, .blog-body mjx-container[display="true"] {
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 1rem 0;
+}
+
+.blog-body table {
+    display: block;
+    overflow-x: auto;
+}
+
+.blog-body th, .blog-body td {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #d9dee5;
+}

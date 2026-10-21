@@ -17,7 +17,7 @@ function countMatches(text, pattern) {
 
 assert.equal(index.includes('polyfill.io'), false, 'polyfill.io must not be loaded');
 assert.equal(countMatches(index, /id="MathJax-script"/g), 1, 'MathJax should be loaded exactly once');
-assert.equal(countMatches(index, /mathjax@3\/es5\/tex-[^"]+\.js/g), 1, 'Only one MathJax component bundle should be loaded');
+assert.equal(countMatches(index, /src="static\/js\/tex-svg\.js"/g), 1, 'Only one MathJax component bundle should be loaded');
 assert.equal(
   /<link[^>]+static\/css\/styles\.css/.test(index) && /@import\s+["']\.\/styles\.css["']/.test(mainCss),
   false,

@@ -30,3 +30,7 @@ sections:
     nav: AWARDS
     title: AWARDS
     icon: bi-award-fill
+  - id: blogs
+    nav: BLOGS
+    title: BLOGS
+    icon: bi-journal-text
