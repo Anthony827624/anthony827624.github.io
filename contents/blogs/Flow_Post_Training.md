@@ -77,29 +77,28 @@ $$
 一个点$x_t$可能来自很多不同的（数据，噪声）配对，每个配对给出的“目标速度”$x_1-x_0$都不一样。网路学到的是这些目标速度的**平均值**，也就是边缘速度场$v_t(x)=\mathbb{E}[x_1-x_0\mid x_t=x]$。用单个配对的速度当监督信号看起来很粗糙，但下面的证明说明，它和直接回归边缘速度场的梯度完全一样，代价只是多了一项与参数无关的“目标噪声”。
 
 <details>
-    
-    <summary>
-        
-        展开证明：Conditional Flow Matching与Marginal Flow Matching的梯度相同。
-        
-    </summary>
-    
-    记$u=x_1-x_0$，边缘速度场为$v_t(x) = \mathbb E[u \mid x_t = x]$。把条件损失按$v_t$拆开：
-    
-    $$
-    \begin{aligned}
-	\mathbb E\big\|v_\theta(x_t,t) - u\big\|^2 = {}& \mathbb E\big\|v_\theta(x_t,t)-v_t(x_t)\big\|^2 + \mathbb E\big\|v_t(x_t) - u\big\|^2 \\
-& + 2\,\mathbb E\big[\langle v_\theta(x_t,t) - v_t(x_t),\; v_t(x_t) - u\rangle\big]
-	\end{aligned}\notag
-    $$
-    
-    交叉项先对 $x_t$ 取条件期望：$v_\theta(x_t,t) - v_t(x_t)$ 在给定 $x_t$ 时是常数，而 $\mathbb E[v_t(x_t) - u \mid x_t] = 0$，所以交叉项为零。于是
-    
-    $$
-    \mathcal L_{\text{CFM}}(\theta) = \underbrace{\mathbb E\big\|v_\theta(x_t,t) - v_t(x_t)\big\|^2}_{\text{边缘 FM 损失}} + \underbrace{\mathbb E\big\|v_t(x_t) - u\big\|^2}_{\text{与 }\theta\text{ 无关的目标噪声}} \notag
-    $$
-    
-    第二项不依赖 $\theta$，所以两种损失有相同的最优解和相同的梯度。但用单个样本估计梯度时，第二项代表的目标波动会进入随机梯度，使梯度估计的方差更大。
-    
-</details>
 
+<summary>
+
+    展开证明：Conditional Flow Matching与Marginal Flow Matching的梯度相同。
+        
+</summary>
+
+  记$u=x_1-x_0$，边缘速度场为$v_t(x) = \mathbb E[u \mid x_t = x]$。把条件损失按$v_t$拆开：
+
+  $$
+  \begin{aligned}
+ \mathbb E\big\|v_\theta(x_t,t) - u\big\|^2 = {}& \mathbb E\big\|v_\theta(x_t,t)-v_t(x_t)\big\|^2 + \mathbb E\big\|v_t(x_t) - u\big\|^2 \\
+  & + 2\,\mathbb E\big[\langle v_\theta(x_t,t) - v_t(x_t),\; v_t(x_t) - u\rangle\big]
+ \end{aligned}\notag
+  $$
+
+  交叉项先对 $x_t$ 取条件期望：$v_\theta(x_t,t) - v_t(x_t)$ 在给定 $x_t$ 时是常数，而 $\mathbb E[v_t(x_t) - u \mid x_t] = 0$，所以交叉项为零。于是
+
+  $$
+  \mathcal L_{\text{CFM}}(\theta) = \underbrace{\mathbb E\big\|v_\theta(x_t,t) - v_t(x_t)\big\|^2}_{\text{边缘 FM 损失}} + \underbrace{\mathbb E\big\|v_t(x_t) - u\big\|^2}_{\text{与 }\theta\text{ 无关的目标噪声}} \notag
+  $$
+  
+  第二项不依赖 $\theta$，所以两种损失有相同的最优解和相同的梯度。但用单个样本估计梯度时，第二项代表的目标波动会进入随机梯度，使梯度估计的方差更大。
+
+</details>
