@@ -316,3 +316,21 @@ section .main-body {
     padding: 0.4rem 0.8rem;
     border: 1px solid #d9dee5;
 }
+
+/* Collapsible proofs in blog posts */
+.blog-body details {
+    margin: 1rem 0 1.25rem;
+    padding: 0.6rem 1rem;
+    border-left: 3px solid #3a4bd4;
+    background: #f5f6fc;
+    border-radius: 0 6px 6px 0;
+}
+.blog-body details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #3a4bd4;
+}
+.blog-body details[open] > summary {
+    margin-bottom: 0.5rem;
+}
+
