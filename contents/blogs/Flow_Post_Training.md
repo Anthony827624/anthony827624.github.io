@@ -80,25 +80,38 @@ $$
 
 <summary>
 
-    展开证明：Conditional Flow Matching与Marginal Flow Matching的梯度相同。
-        
+展开证明：Conditional Flow Matching与Marginal Flow Matching的梯度相同。
+
 </summary>
 
-  记$u=x_1-x_0$，边缘速度场为$v_t(x) = \mathbb E[u \mid x_t = x]$。把条件损失按$v_t$拆开：
+记$u=x_1-x_0$，边缘速度场为$v_t(x) = \mathbb E[u \mid x_t = x]$。把条件损失按$v_t$拆开：
+$$
+\begin{aligned}
+\mathbb E\big\|v_\theta(x_t,t) - u\big\|^2 = {}& \mathbb E\big\|v_\theta(x_t,t)-v_t(x_t)\big\|^2 + \mathbb E\big\|v_t(x_t) - u\big\|^2 \\
+& + 2\,\mathbb E\big[\langle v_\theta(x_t,t) - v_t(x_t),\; v_t(x_t) - u\rangle\big]
+\end{aligned}\notag
+$$
+交叉项是$\mathbb{E}\big[ \langle a,b \rangle \big]$，其中：
 
-  $$
-  \begin{aligned}
- \mathbb E\big\|v_\theta(x_t,t) - u\big\|^2 = {}& \mathbb E\big\|v_\theta(x_t,t)-v_t(x_t)\big\|^2 + \mathbb E\big\|v_t(x_t) - u\big\|^2 \\
-  & + 2\,\mathbb E\big[\langle v_\theta(x_t,t) - v_t(x_t),\; v_t(x_t) - u\rangle\big]
- \end{aligned}\notag
-  $$
+- $a=v_\theta(x_t,t) - v_t(x_t)$：网络输出减去边缘速度场。两者都是$x_t$和$t$的函数，所以$a$只依赖$x_t$
+- $b=v_t(x_t) - u$：其中$u=x_1-x_0$，因此$b$就依赖于$x_t$具体是由哪一对$(x_0,x_1)$所构成的
 
-  交叉项先对 $x_t$ 取条件期望：$v_\theta(x_t,t) - v_t(x_t)$ 在给定 $x_t$ 时是常数，而 $\mathbb E[v_t(x_t) - u \mid x_t] = 0$，所以交叉项为零。于是
+这里的关键是，同一个$x_t$可以由很多不同的$(x_0,x_1)$配对插值得到。所以固定$x_t$后，$a$就定下来了，而$u$（因此$b$）仍然是随机的。
 
-  $$
+**分两层求期望**：我们可以把总期望拆成“外层对$x_t$、内层对给定$x_t$时的$(x_0,x_1)$”：
+$$
+\mathbb{E}\big[ \langle a,b \rangle \big]=\mathbb{E}_{x_t}\big[\mathbb{E}[\langle a,b \rangle]\mid x_t\big]
+$$
+对于内层$\mathbb{E}[\cdot\mid x_t]$：
+
+- $a$是常数：因此可以提到期望外面，即$\mathbb{E}[\langle a,b \rangle\mid x_t]=\langle a,\mathbb{E}[b\mid x_t]\rangle$。
+- $\mathbb{E}[b\mid x_t]$为零：由于$v_t(x_t)$在给定$x_t$时是常数，所以$\mathbb{E}[b\mid x_t]=v_t(x_t)-\mathbb{E}[u\mid x_t]=v_t(x_t)-v_t(x_t)=0$。
+
+所以内层是$\langle a,0 \rangle=0$，外层再取期望还是0，交叉项消失！
+$$
   \mathcal L_{\text{CFM}}(\theta) = \underbrace{\mathbb E\big\|v_\theta(x_t,t) - v_t(x_t)\big\|^2}_{\text{边缘 FM 损失}} + \underbrace{\mathbb E\big\|v_t(x_t) - u\big\|^2}_{\text{与 }\theta\text{ 无关的目标噪声}} \notag
-  $$
-  
-  第二项不依赖 $\theta$，所以两种损失有相同的最优解和相同的梯度。但用单个样本估计梯度时，第二项代表的目标波动会进入随机梯度，使梯度估计的方差更大。
+$$
+
+第二项不依赖 $\theta$，所以两种损失有相同的最优解和相同的梯度。但用单个样本估计梯度时，第二项代表的目标波动会进入随机梯度，使梯度估计的方差更大。
 
 </details>
