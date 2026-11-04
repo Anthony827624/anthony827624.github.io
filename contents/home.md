@@ -9,6 +9,7 @@ I am currently a member of [The Perception and Language Lab (PLAN-Lab)](https://
 
 Email: [hongshuo.24@intl.zju.edu.cn](mailto:hongshuo.24@intl.zju.edu.cn) \
 Email: [hz108@illinois.edu](mailto:hz108@illinois.edu)
+[X(Twitter)](https://x.com/HongshuoZhao827) | [Google Scholar](https://scholar.google.com/citations?user=YMcwAPsAAAAJ) | [LinkedIn](https://www.linkedin.com/in/hongshuo-zhao-5b841a421/)
 
 #### Education
 
