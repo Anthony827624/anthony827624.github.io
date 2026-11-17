@@ -68,7 +68,7 @@ x_t=(1-t)x_0+tx_1\label{interp}
 $$
 沿这条直线的速度是$u=\frac{dx_t}{dt}=x_1-x_0$，也就是由噪声端指向数据端。网络$v_\theta(x_t,t)$被训练去回归这个速度，这就是条件流匹配（Conditional Flow Matching, CFM）：
 $$
-\mathcal{L}_{\text{CFM}}(\theta)=\mathbb{E}_{t,x_0,x_1}\left[ \| v_\theta(x_t,t)-(x_1-x_0) \|^2 \right] \label{cfm}
+\mathcal{L}_{\text{CFM}}(\theta)=\mathbb{E}_{t,x_0,x_1}\left[ \| v_\theta(x_t,t)-(x_1-x_0) \|^2 \right] \label{cfm_1}
 $$
 训练好之后，从噪声出发，沿着ODE一路从$t=1$积分到$t=0$，即$dx_t=v_\theta(x_t,t)$，就得到一个样本。最简单的Euler离散化是：
 $$
@@ -105,7 +105,7 @@ $$
 
 所以内层是$\langle a,0 \rangle=0$，外层再取期望还是0，交叉项消失！
 $$
-  \mathcal L_{\text{CFM}}(\theta) = \underbrace{\mathbb E\big\|v_\theta(x_t,t) - v_t(x_t)\big\|^2}_{\text{边缘 FM 损失}} + \underbrace{\mathbb E\big\|v_t(x_t) - u\big\|^2}_{\text{与 }\theta\text{ 无关的目标噪声}} \notag
+\mathcal L_{\text{CFM}}(\theta) = \underbrace{\mathbb E\big\|v_\theta(x_t,t) - v_t(x_t)\big\|^2}_{\text{边缘 FM 损失}} + \underbrace{\mathbb E\big\|v_t(x_t) - u\big\|^2}_{\text{与 }\theta\text{ 无关的目标噪声}} \notag
 $$
 
 第二项不依赖 $\theta$，所以两种损失有相同的最优解和相同的梯度。但用单个样本估计梯度时，第二项代表的目标波动会进入随机梯度，使梯度估计的方差更大。
@@ -268,3 +268,61 @@ Flow Matching的损失小，说明模型“很擅长把噪声推向$x_0$”，�
 | 采样器       | 必须是特定的随机采样器      | 任意黑盒                       |
 | 信用分配     | $K$ 步共享一个终点优势      | 单步，无此问题                 |
 | 训练目标     | 与预训练目标不同            | 与预训练目标一致               |
+
+## 2. 路线A：反向过程RL
+
+在1.4.1节说过，路线A的核心思路是把去噪链看成一个多步的MDP，每一步都是一个有闭式密度的高斯转移。只要能做到这一点，PPO和GRPO就可以原封不动地进行套用。这一节的四篇论文都建立在这个框架上，他们的区别可以归结为四个设计选择：
+
+1. **在哪些步注入噪声**：哪些步是“随机动作”，哪些步是确定性的ODE；
+2. **在哪些步计算梯度**：哪些步的比值进入损失；
+3. **每一步的梯度权重是多少**；
+4. **组怎么分**：同一组样本是否共享初始噪声，优势在哪个范围内归一化；
+
+### 2.1 Flow-GRPO：让每一步都变成高斯
+
+#### 2.1.1 ODE $\to$ SDE：注入噪声，但不改变分布
+
+对任意的噪声强度$\sigma_t\ge0$，下面这个随机采样步与原来的ODE有**相同的边缘分布**$p_t$（在步长趋于零的连续时间极限下）：
+$$
+x_{t-\Delta t}=x_t-\left[ v_\theta(x_t,t)-\frac{\sigma_t^2}{2t}(x_t+(1-t)v_\theta(x_t,t))\right]\Delta t+\sigma_t\sqrt{\Delta t}\,\epsilon,\quad \epsilon\sim\mathcal{N}(0,I)\label{sde}
+$$
+$\sigma_t=0$时它就退化为普通的Euler ODE步，即式$\eqref{euler}$。Flow-GRPO取$\sigma_t=a\sqrt{\frac{t}{1-t}}$，默认$a=0.7$：噪声端（$t$大）注入的噪声多，数据端（$t$小）注入的少。
+
+在式$\eqref{sde}$中括号里多出来的那一项，其实有很直观的含义。在Rectified Flow中，$x_t+(1-t)v_\theta(x_t,t)$正好是模型对**初始噪声**$x_t$的预测，记为$\hat{x}_1$。所以式$\eqref{sde}$可以改写为：
+$$
+x_{t-\Delta t}=\underbrace{x_t-v_\theta\Delta t}_{\text{原来的ODE步}}-\underbrace{\frac{\sigma_t^2}{2t}\hat{x}_1\Delta t}_{\text{多去掉一点预测噪声}}
+$$
+
+
+
+
+
+
+---
+
+## 参考文献
+
+**本文讨论的工作**
+
+1. Jie Liu, Gongye Liu, Jiajun Liang, Yangguang Li, Jiaheng Liu, Xintao Wang, Pengfei Wan, Di Zhang, Wanli Ouyang. *Flow-GRPO: Training Flow Matching Models via Online RL.* NeurIPS 2025. [arXiv:2505.05470](https://arxiv.org/abs/2505.05470)
+2. Zeyue Xue, Jie Wu, Yu Gao, Fangyuan Kong, Lingting Zhu, Mengzhao Chen, Zhiheng Liu, Wei Liu, Qiushan Guo, Weilin Huang, Ping Luo. *DanceGRPO: Unleashing GRPO on Visual Generation.* arXiv 2025. [arXiv:2505.07818](https://arxiv.org/abs/2505.07818)
+3. Junzhe Li, Yutao Cui, Tao Huang, Weijie Kong, Chuxuan Zeng, Yiming Cheng, Yinping Ma, Chun Fan, Miles Yang, Zhao Zhong, Liefeng Bo. *MixGRPO: Unlocking Flow-based GRPO Efficiency with Mixed ODE-SDE.* arXiv 2025. [arXiv:2507.21802](https://arxiv.org/abs/2507.21802)
+4. Xiaoxuan He, Siming Fu, Yuke Zhao, Wanli Li, Jian Yang, Dacheng Yin, Fengyun Rao, Bo Zhang. *TempFlow-GRPO: When Timing Matters for GRPO in Flow Models.* arXiv 2025. [arXiv:2508.04324](https://arxiv.org/abs/2508.04324)
+5. David McAllister, Songwei Ge, Brent Yi, Chung Min Kim, Ethan Weber, Hongsuk Choi, Haiwen Feng, Angjoo Kanazawa. *Flow Matching Policy Gradients.* ICLR 2026. [arXiv:2507.21053](https://arxiv.org/abs/2507.21053)
+6. Shuchen Xue, Chongjian Ge, Shilong Zhang, Yichen Li, Zhi-Ming Ma. *Advantage Weighted Matching: Aligning RL with Pretraining in Diffusion Models.* ICML 2026. [arXiv:2509.25050](https://arxiv.org/abs/2509.25050)
+7. Kaiwen Zheng, Huayu Chen, Haotian Ye, Haoxiang Wang, Qinsheng Zhang, Kai Jiang, Hang Su, Stefano Ermon, Jun Zhu, Ming-Yu Liu. *DiffusionNFT: Online Diffusion Reinforcement with Forward Process.* ICLR 2026. [arXiv:2509.16117](https://arxiv.org/abs/2509.16117)
+8. Zhenglin Wan, Jiayu Chen, Zhengfeiyang Zhang, Pengfei Zhou, Wangbo Zhao, Fangyuan Kong, Pengfei Wan, Kun Gai, Yang You. *DiffusionART: Efficient, Stable and Scalable Reinforcement of Diffusion Models.* arXiv 2026. [arXiv:2610.12572](https://arxiv.org/abs/2610.12572)
+
+**背景与相关工作**
+
+9. Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu, Maximilian Nickel, Matt Le. *Flow Matching for Generative Modeling.* ICLR 2023. [arXiv:2210.02747](https://arxiv.org/abs/2210.02747)
+10. Xingchao Liu, Chengyue Gong, Qiang Liu. *Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow.* ICLR 2023. [arXiv:2209.03003](https://arxiv.org/abs/2209.03003)
+11. Ricky T. Q. Chen, Yulia Rubanova, Jesse Bettencourt, David Duvenaud. *Neural Ordinary Differential Equations.* NeurIPS 2018. [arXiv:1806.07366](https://arxiv.org/abs/1806.07366)
+12. Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, Ben Poole. *Score-Based Generative Modeling through Stochastic Differential Equations.* ICLR 2021. [arXiv:2011.13456](https://arxiv.org/abs/2011.13456)
+13. Diederik P. Kingma, Ruiqi Gao. *Understanding Diffusion Objectives as the ELBO with Simple Data Augmentation.* NeurIPS 2023. [arXiv:2303.00848](https://arxiv.org/abs/2303.00848)
+14. John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov. *Proximal Policy Optimization Algorithms.* arXiv 2017. [arXiv:1707.06347](https://arxiv.org/abs/1707.06347)
+15. Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, Y. K. Li, Y. Wu, Daya Guo. *DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models.* arXiv 2024. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
+16. Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, Sergey Levine. *Training Diffusion Models with Reinforcement Learning.* ICLR 2024. [arXiv:2305.13301](https://arxiv.org/abs/2305.13301)
+17. Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, Kimin Lee. *DPOK: Reinforcement Learning for Fine-tuning Text-to-Image Diffusion Models.* NeurIPS 2023. [arXiv:2305.16381](https://arxiv.org/abs/2305.16381)
+18. Feng Wang, Zihao Yu. *Coefficients-Preserving Sampling for Reinforcement Learning with Flow Matching.* arXiv 2025. [arXiv:2509.05952](https://arxiv.org/abs/2509.05952)
+19. Cheng Lu, Yuhang Zhou, Fan Bao, Jianfei Chen, Chongxuan Li, Jun Zhu. *DPM-Solver++: Fast Solver for Guided Sampling of Diffusion Probabilistic Models.* arXiv 2022. [arXiv:2211.01095](https://arxiv.org/abs/2211.01095)
