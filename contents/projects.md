@@ -1,3 +1,4 @@
 - **HDBrain** — Explainable Singapore HDB Valuation and Affordability Analysis. [[Website]](https://anthony827624.github.io/HDBrain) [[Code]](https://github.com/anthony827624/HDBrain)
 - **VGNNA** - Phonon Band Prediction for Screening of Material Thermal Properties. [[Code]](https://github.com/anthony827624/VGNNA)
 - **Agentic Robotics Benchmark** - Contributed the `hot3d_sharpa_retarget` task: retargeting egocentric bimanual HOT3D manipulation to dexterous robot hands in Isaac Sim. [[Code]](https://github.com/Grounded-Intelligence-Initiative/agentic-robotics-benchmark) [[PR]](https://github.com/Grounded-Intelligence-Initiative/agentic-robotics-benchmark/pull/26)
+- **gpustat** - Contributed the Apple Silicon GPU backend, bringing GPU monitoring to M-series Macs. [[Code]](https://github.com/wookayin/gpustat) [[PR]](https://github.com/wookayin/gpustat/pull/188)
